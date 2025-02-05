@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch
 import pygame
 
-from modules.ScoreSystem import ScoreSystem
+from modules.util.ScoreSystem import ScoreSystem
 
 class TestScoreSystem(unittest.TestCase):
     def setUp(self):

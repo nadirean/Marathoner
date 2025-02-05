@@ -1,6 +1,6 @@
 import pygame
 
-from modules.Button import Button
+from modules.models.Button import Button
 
 from resource_path import resource_path
 

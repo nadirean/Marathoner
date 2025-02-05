@@ -5,11 +5,11 @@ from random import choice
 
 import pygame
 
-from modules.Obstacle import Obstacle
-from modules.Player import Player
-from modules.ScoreSystem import ScoreSystem
-from modules.Button import Button
-from modules.Settings import Settings
+from modules.models.Obstacle import Obstacle
+from modules.models.Player import Player
+from modules.util.ScoreSystem import ScoreSystem
+from modules.models.Button import Button
+from modules.util.Settings import Settings
 
 from modules.screens.StartGameScreen import StartGameScreen
 from modules.screens.GameOverScreen import GameOverScreen

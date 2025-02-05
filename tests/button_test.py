@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 import pygame
 
-from modules.Button import Button
+from modules.models.Button import Button
 
 class TestButton(unittest.TestCase):
     def setUp(self):

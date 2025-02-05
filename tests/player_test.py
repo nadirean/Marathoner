@@ -1,7 +1,7 @@
 import unittest
 import pygame
 
-from modules.Player import Player
+from modules.models.Player import Player
 
 class TestPlayer(unittest.TestCase):
     def setUp(self):

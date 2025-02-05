@@ -1,7 +1,7 @@
 import unittest
 import pygame
 
-from modules.Obstacle import Obstacle
+from modules.models.Obstacle import Obstacle
 
 class TestObstacle(unittest.TestCase):
     def setUp(self):

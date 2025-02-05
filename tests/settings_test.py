@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from modules.Settings import Settings
+from modules.util.Settings import Settings
 
 class TestSettings(unittest.TestCase):
     def setUp(self):
