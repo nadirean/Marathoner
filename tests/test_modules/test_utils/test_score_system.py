@@ -1,9 +1,11 @@
 import os
 import unittest
 from unittest.mock import patch
+
 import pygame
 
 from modules.util.ScoreSystem import ScoreSystem
+
 
 class TestScoreSystem(unittest.TestCase):
     def setUp(self):

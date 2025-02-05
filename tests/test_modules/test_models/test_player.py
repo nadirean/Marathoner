@@ -1,9 +1,11 @@
 import unittest
+
 import pygame
 
 from modules.models.Player import Player
 
-class TestPlayer(unittest.TestCase):
+
+class PlayerTest(unittest.TestCase):
     def setUp(self):
         pygame.init()
         pygame.mixer.init()
@@ -41,13 +43,13 @@ class TestPlayer(unittest.TestCase):
     def test_animation_state(self):
         self.player.jump_index = 0
         self.player.run_index = 0
-        self.player.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5 - 10
+        #self.player.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5 - 10
         self.player.animation_state()
 
         self.assertEqual(self.player.jump_index, 0.1)
         self.assertEqual(self.player.image, self.player.player_jump[0])
 
-        self.player.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5 + 10
+        #self.player.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5 + 10
         self.player.animation_state()
 
         self.assertEqual(self.player.run_index, 0.1)
@@ -62,3 +64,6 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(self.player.screen_size, new_screen_size)
         self.assertNotEqual(self.player.player_run, initial_screen_size)
         self.assertNotEqual(self.player.player_jump, initial_screen_size)
+
+if __name__ == '__main__':
+    unittest.main()

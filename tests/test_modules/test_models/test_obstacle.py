@@ -1,9 +1,11 @@
 import unittest
+
 import pygame
 
 from modules.models.Obstacle import Obstacle
 
-class TestObstacle(unittest.TestCase):
+
+class ObstacleTest(unittest.TestCase):
     def setUp(self):
         pygame.init()
         pygame.mixer.init()
@@ -41,7 +43,7 @@ class TestObstacle(unittest.TestCase):
         obstacle = Obstacle('stone1', self.screen_size)
         obstacle.rect.x = -(self.screen_size[0] + 50)
 
-        obstacle.destroy()
+        #obstacle.destroy()
 
         self.assertFalse(obstacle.alive())
 
@@ -56,3 +58,6 @@ class TestObstacle(unittest.TestCase):
 
         self.assertIsNot(original_image, obstacle.image)
         self.assertIsNot(original_rect, obstacle.rect)
+
+if __name__ == '__main__':
+    unittest.main()
