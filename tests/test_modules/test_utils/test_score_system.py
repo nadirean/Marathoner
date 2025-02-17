@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pygame
 
-from modules.util.ScoreSystem import ScoreSystem
+from modules.util.score_system import ScoreSystem
 
 
 class TestScoreSystem(unittest.TestCase):

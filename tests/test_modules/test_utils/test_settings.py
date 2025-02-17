@@ -14,10 +14,8 @@ class TestSettings(unittest.TestCase):
         Set up the test environment by removing the settings 
         file if it exists and initializing the Settings object.
         """
-        try:
+        if os.path.exists(SETTINGS_PATH):
             os.remove(SETTINGS_PATH)
-        except FileNotFoundError:
-            pass
 
         self.settings = Settings()
 
