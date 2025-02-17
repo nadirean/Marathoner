@@ -8,11 +8,10 @@ import pygame
 from modules.models.Button import Button
 from modules.models.Obstacle import Obstacle
 from modules.models.Player import Player
-from modules.screens.GameOverScreen import GameOverScreen
-from modules.screens.PauseGameScreen import PauseGameScreen
-from modules.screens.StartGameScreen import StartGameScreen
-from modules.screens.GameScreen import GameScreen
-from modules.screens.SettingsScreen import SettingsScreen
+from modules.screens.game_over_screen import GameOverScreen
+from modules.screens.pause_game_screen import PauseGameScreen
+from modules.screens.start_game_screen import StartGameScreen
+from modules.screens.game_screen import GameScreen
 from modules.util.score_system import ScoreSystem
 from modules.util.setting_type import SettingType
 from modules.util.settings import Settings
@@ -103,7 +102,6 @@ class Game():
         self.game_over_screen = GameOverScreen(self.screen, self.game_font, self)
         self.pause_game_screen = PauseGameScreen(self.screen, self.game_font, self)
         self.game_screen = GameScreen(self.screen, self.game_font, self)
-        self.settings_screen = SettingsScreen(self.screen, self.game_font, self)
 
     def toggle_fullscreen(self):
         # ENTER FULLSCREEN MODE
@@ -257,10 +255,6 @@ class Game():
             # PAUSE MENU
             elif self.current_screen == 2:
                 self.pause_game_screen.frame(self.screen_size, events, best_score, self.settings)
-
-            # SETTINGS SCREEN
-            elif self.current_screen == 3:
-                self.settings_screen.frame(self.screen_size, events, self.settings)
 
             pygame.display.update()
             self.clock.tick(60)
