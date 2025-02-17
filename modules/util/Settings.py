@@ -1,5 +1,5 @@
 """
-A module containing the Settings class, which is responsible for handling the game settings.
+A module containing the Settings class.
 """
 
 import configparser
@@ -8,10 +8,7 @@ import os
 from modules.util.setting_type import SettingType
 
 DEFAULT_SETTINGS = {
-    'GENERAL': {
-        SettingType.MUSIC.value: 1,
-        SettingType.SOUNDS.value: 1
-    }
+    'GENERAL': { SettingType.MUSIC.value: 1, SettingType.SOUNDS.value: 1 }
 }
 
 SETTINGS_PATH = os.path.join(os.path.expanduser("~"), 'Marathoner', 'settings.ini')
@@ -19,16 +16,15 @@ SETTINGS_PATH = os.path.join(os.path.expanduser("~"), 'Marathoner', 'settings.in
 
 class Settings:
     """
-    A class used to represent the game settings.
+    A class responsible for handling the game settings.
     
-    Attributes
-    ----------
-    config : ConfigParser
-        the ConfigParser object used to read and write settings
-    music : bool
-        music on/off
-    sounds : bool
-        sounds on/off
+    Attributes:
+    music (bool): Whether the music is enabled.
+    sounds (bool): Whether the sounds are enabled.
+    config (configparser.ConfigParser): The configuration parser.
+    
+    Methods:
+    update_settings: Update the game settings.
     """
     def __init__(self):
         self.config = configparser.ConfigParser()
@@ -60,12 +56,9 @@ class Settings:
         """
         Update the game settings.
 
-        Parameters
-        ----------
-        state : bool
-            the new state of the setting
-        setting : SettingType
-            the setting to update
+        Parameters:
+        state (bool): the new state of the setting.
+        setting (SettingType): the setting to update.
         """
         setattr(self, setting.value.lower(), state)
         self.config.set("GENERAL", setting.value, "1" if state else "0")
