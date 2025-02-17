@@ -2,6 +2,8 @@ import os
 
 import pygame
 
+BEST_SCORE_PATH = os.path.join(os.path.expanduser("~"), 'Marathoner', 'best_score.txt')
+
 class ScoreSystem():
     def __init__(self, screen_size):
         self.screen_size = screen_size
@@ -10,7 +12,7 @@ class ScoreSystem():
 
     def load_best_score(self):
         try:
-            with open(os.path.expanduser("~") + '/Marathoner/best_score.txt', 'r', encoding='utf-8') as file:
+            with open(BEST_SCORE_PATH, 'r', encoding='utf-8') as file:
                 best_score = int(file.read())
                 return best_score
         except FileNotFoundError:
@@ -22,7 +24,7 @@ class ScoreSystem():
         best_score = self.load_best_score()
         if score > best_score:
             try:
-                with open(os.path.expanduser("~") + '/Marathoner/best_score.txt', 'w',  encoding='utf-8') as file:
+                with open(BEST_SCORE_PATH, 'w',  encoding='utf-8') as file:
                     file.write(str(score))
             except Exception as e:
                 print(f"Error while saving best score: {e}")
@@ -36,12 +38,12 @@ class ScoreSystem():
 
     def update_screen_size(self, screen_size):
         self.screen_size = screen_size
-        if(self.score_rectangle and self.score_surface):
+        if self.score_rectangle and self.score_surface:
             self.score_rectangle = self.score_surface.get_rect(center=(self.screen_size[0] // 2, self.screen_size[1] // 14))
 
     def reset_best_score(self):
         try:
-            with open(os.path.expanduser("~") + '/Marathoner/best_score.txt', 'w', encoding='utf-8') as file:
+            with open(BEST_SCORE_PATH, 'w', encoding='utf-8') as file:
                 file.write('0')
         except IOError as e:
             print(f"Error: {e}")
