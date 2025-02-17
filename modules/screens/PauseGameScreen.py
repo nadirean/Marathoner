@@ -1,10 +1,8 @@
 import pygame
-
 from modules.models.Button import Button
 from resource_path import resource_path
 
-
-class PauseGameScreen():
+class PauseGameScreen:
     def __init__(self, screen, game_font, parent):
         self.parent = parent
         self.screen = screen

@@ -5,17 +5,20 @@ from random import choice
 
 import pygame
 
+from modules.models.Button import Button
 from modules.models.Obstacle import Obstacle
 from modules.models.Player import Player
-from modules.util.ScoreSystem import ScoreSystem
-from modules.models.Button import Button
-from modules.util.Settings import Settings
-
-from modules.screens.StartGameScreen import StartGameScreen
 from modules.screens.GameOverScreen import GameOverScreen
 from modules.screens.PauseGameScreen import PauseGameScreen
-
+from modules.screens.StartGameScreen import StartGameScreen
+from modules.screens.GameScreen import GameScreen
+from modules.screens.SettingsScreen import SettingsScreen
+from modules.util.score_system import ScoreSystem
+from modules.util.setting_type import SettingType
+from modules.util.settings import Settings
+from modules.util.error_popup import ErrorPopup
 from resource_path import resource_path
+
 
 class Game():
     def __init__(self):
@@ -99,6 +102,8 @@ class Game():
         self.start_game_screen = StartGameScreen(self.screen, self.game_font, self)
         self.game_over_screen = GameOverScreen(self.screen, self.game_font, self)
         self.pause_game_screen = PauseGameScreen(self.screen, self.game_font, self)
+        self.game_screen = GameScreen(self.screen, self.game_font, self)
+        self.settings_screen = SettingsScreen(self.screen, self.game_font, self)
 
     def toggle_fullscreen(self):
         # ENTER FULLSCREEN MODE
@@ -113,7 +118,7 @@ class Game():
             self.fullscreen = False
 
     def toggle_music(self):
-        self.settings.update_settings(not self.settings.music, "Music")
+        self.settings.update_settings(not self.settings.music, SettingType.MUSIC)
 
         if self.settings.music:
             self.channel1.set_volume(0.5)
@@ -121,7 +126,7 @@ class Game():
             self.channel1.set_volume(0)
 
     def toggle_sounds(self):
-        self.settings.update_settings(not self.settings.sounds, "Sounds")
+        self.settings.update_settings(not self.settings.sounds, SettingType.SOUNDS)
 
         if self.settings.sounds:
             self.channel2.set_volume(1)
@@ -247,33 +252,15 @@ class Game():
 
             # GAME
             elif self.current_screen == 1:
-                # DRAW BACKGROUND
-                self.screen.blit(pygame.transform.scale(self.sky_surface, self.screen_size), (0, 0))
-                self.screen.blit(pygame.transform.scale(self.ground_surface, self.screen_size), (0, self.screen_size[1] * 0.6))
-
-                # DRAW PLAYER AND OBSTACLES
-                self.player.draw(self.screen)
-                self.player.update(self.channel2)
-
-                self.obstacle_group.draw(self.screen)
-                self.obstacle_group.update()
-
-                # DRAW VIGNETTE
-                self.screen.blit(pygame.transform.scale(self.vignette_surface, self.screen_size), (0, 0))
-
-                # DRAW SCORE
-                self.score = self.score_system.display_score(self.game_font, self.start_time, self.screen)
-
-                # CHECK FOR COLLISIONS
-                self.current_screen = self.collision_sprite()
-
-                # DRAW [ESC] and [X] BUTTONS
-                Button(self.screen_size[0] - self.screen_size[0] // 6, self.screen_size[1] // 14, self.game_font, "[ESC]", self.screen, self.pause_game, events).process()
-                Button(self.screen_size[0] - self.screen_size[0] // 14, self.screen_size[1] // 14, self.game_font, "[X]", self.screen, self.quit_game, events, "Red").process()
+                self.game_screen.frame(self.screen_size, events)
 
             # PAUSE MENU
             elif self.current_screen == 2:
                 self.pause_game_screen.frame(self.screen_size, events, best_score, self.settings)
+
+            # SETTINGS SCREEN
+            elif self.current_screen == 3:
+                self.settings_screen.frame(self.screen_size, events, self.settings)
 
             pygame.display.update()
             self.clock.tick(60)
