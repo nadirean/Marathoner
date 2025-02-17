@@ -1,13 +1,11 @@
 import pygame
-from modules.models.Button import Button
+
+from modules.screens.base_screen import BaseScreen
 from resource_path import resource_path
 
-class PauseGameScreen:
+class PauseGameScreen(BaseScreen):
     def __init__(self, screen, game_font, parent):
-        self.parent = parent
-        self.screen = screen
-        self.game_font = game_font
-
+        super().__init__(screen, game_font, parent)
         self.blur_surface = pygame.image.load(resource_path('images/blur.jpg')).convert_alpha()
 
     def frame(self, screen_size, events, best_score, settings):
@@ -18,27 +16,20 @@ class PauseGameScreen:
         music_message = "[UNMUTE MUSIC]" if not settings.music else "[MUTE MUSIC]"
         sounds_message = "[UNMUTE SOUND]" if not settings.sounds else "[MUTE SOUND]"
 
-        pause_text = self.game_font.render("GAME PAUSED", False, "White")
-        best_score_text = self.game_font.render(f"BEST SCORE: {best_score}", False, "White")
-
-        # RECTANGLES
-        pause_text_rect = pause_text.get_rect(center=(screen_size[0] // 2, screen_size[1] // 4))
-        best_score_text_rect = best_score_text.get_rect(center=(screen_size[0] // 2, screen_size[1] // 3))
-
         # DRAW ELEMENTS
-        self.screen.blit(pause_text, pause_text_rect)
-        self.screen.blit(best_score_text, best_score_text_rect)
+        self.draw_text("GAME PAUSED", (screen_size[0] // 2, screen_size[1] // 4))
+        self.draw_text(f"BEST SCORE: {best_score}", (screen_size[0] // 2, screen_size[1] // 3))
 
         # BUTTONS LIST
         button_y = screen_size[1] // 2
         button_spacing = screen_size[1] // 12
 
-        Button(screen_size[0] // 2, button_y, self.game_font, "[ABORT GAME]", self.screen, self.parent.abort_game, events).process()
-        Button(screen_size[0] // 2, button_y + button_spacing, self.game_font, "[FULLSCREEN F11]", self.screen, self.parent.toggle_fullscreen, events).process()
-        Button(screen_size[0] // 2, button_y + button_spacing * 2, self.game_font, "[RESET BEST SCORE]", self.screen, self.parent.score_system.reset_best_score, events).process()
-        Button(screen_size[0] // 2, button_y + button_spacing * 3, self.game_font, music_message, self.screen, self.parent.toggle_music, events).process()
-        Button(screen_size[0] // 2, button_y + button_spacing * 4, self.game_font, sounds_message, self.screen, self.parent.toggle_sounds, events).process()
+        self.draw_button(screen_size[0] // 2, button_y, "[ABORT GAME]", self.parent.abort_game, events)
+        self.draw_button(screen_size[0] // 2, button_y + button_spacing, "[FULLSCREEN F11]", self.parent.toggle_fullscreen, events)
+        self.draw_button(screen_size[0] // 2, button_y + button_spacing * 2, "[RESET BEST SCORE]", self.parent.score_system.reset_best_score, events)
+        self.draw_button(screen_size[0] // 2, button_y + button_spacing * 3, music_message, self.parent.toggle_music, events)
+        self.draw_button(screen_size[0] // 2, button_y + button_spacing * 4, sounds_message, self.parent.toggle_sounds, events)
 
         # DRAW [ESC] and [X] BUTTONS
-        Button(screen_size[0] - screen_size[0] // 6, screen_size[1] // 14, self.game_font, "[ESC]", self.screen, self.parent.resume_game, events).process()
-        Button(screen_size[0] - screen_size[0] // 14, screen_size[1] // 14, self.game_font, "[X]", self.screen, self.parent.quit_game, events, "Red").process()
+        self.draw_button(screen_size[0] - screen_size[0] // 6, screen_size[1] // 14, "[ESC]", self.parent.resume_game, events)
+        self.draw_button(screen_size[0] - screen_size[0] // 14, screen_size[1] // 14, "[X]", self.parent.quit_game, events, "Red")

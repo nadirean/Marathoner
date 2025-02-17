@@ -1,11 +1,10 @@
 import pygame
-from modules.models.Button import Button
 
-class GameScreen:
+from modules.screens.base_screen import BaseScreen
+
+class GameScreen(BaseScreen):
     def __init__(self, screen, game_font, parent):
-        self.parent = parent
-        self.screen = screen
-        self.game_font = game_font
+        super().__init__(screen, game_font, parent)
 
     def frame(self, screen_size, events):
         # DRAW BACKGROUND
@@ -29,5 +28,5 @@ class GameScreen:
         self.parent.current_screen = self.parent.collision_sprite()
 
         # DRAW [ESC] and [X] BUTTONS
-        Button(screen_size[0] - screen_size[0] // 6, screen_size[1] // 14, self.game_font, "[ESC]", self.screen, self.parent.pause_game, events).process()
-        Button(screen_size[0] - screen_size[0] // 14, screen_size[1] // 14, self.game_font, "[X]", self.screen, self.parent.quit_game, events, "Red").process()
+        self.draw_button(screen_size[0] - screen_size[0] // 6, screen_size[1] // 14, "[ESC]", self.parent.pause_game, events)
+        self.draw_button(screen_size[0] - screen_size[0] // 14, screen_size[1] // 14, "[X]", self.parent.quit_game, events, "Red")
