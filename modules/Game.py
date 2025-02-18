@@ -14,7 +14,7 @@ from modules.screens.game_screen import GameScreen
 from modules.util.score_system import ScoreSystem
 from modules.util.setting_type import SettingType
 from modules.util.settings import Settings
-from modules.util.error_popup import ErrorPopup
+from modules.components.error_popup import ErrorPopup
 from resource_path import resource_path
 
 
