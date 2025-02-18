@@ -2,7 +2,7 @@
 A module that contains the BaseScreen class.
 """
 
-from modules.models.Button import Button
+from modules.models.button import Button
 
 
 class BaseScreen:

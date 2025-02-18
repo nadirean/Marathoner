@@ -5,9 +5,8 @@ from random import choice
 
 import pygame
 
-from modules.models.Button import Button
-from modules.models.Obstacle import Obstacle
-from modules.models.Player import Player
+from modules.models.obstacle import Obstacle
+from modules.models.player import Player
 from modules.screens.game_over_screen import GameOverScreen
 from modules.screens.pause_game_screen import PauseGameScreen
 from modules.screens.start_game_screen import StartGameScreen
