@@ -1,7 +1,36 @@
+"""
+A module that contains the Player class.
+"""
+
 import pygame
+
 from resource_path import resource_path
 
+
 class Player(pygame.sprite.Sprite):
+    """
+    A class representing the player.
+    
+    Attributes:
+    screen_size (tuple): The screen size.
+    run_index (int): The index of the running animation.
+    jump_index (int): The index of the jumping animation.
+    player_run (list): The running animation frames.
+    player_jump (list): The jumping animation frames.
+    image (pygame.Surface): The image of the player.
+    mask (pygame.mask.Mask): The mask of the player.
+    rect (pygame.Rect): The rectangle of the player.
+    gravity (int): The gravity of the player.
+    jump_sound (pygame.mixer.Sound): The sound of the player jumping.
+    
+    Methods:
+    load: Load the player.
+    player_input: Handle the player input.
+    apply_gravity: Apply gravity to the player.
+    animation_state: Set the animation state of the player.
+    update: Update the player.
+    update_screen_size: Update the screen size of the player.
+    """
     def __init__(self, screen_size):
         super().__init__()
         self.screen_size = screen_size
@@ -10,6 +39,9 @@ class Player(pygame.sprite.Sprite):
         self.load()
 
     def load(self):
+        """
+        Load the player.
+        """
         # RUNNING ANIMATION FRAMES
         player_run1 = pygame.image.load(resource_path('images/run1.png')).convert_alpha()
         player_run2 = pygame.image.load(resource_path('images/run2.png')).convert_alpha()
@@ -24,8 +56,12 @@ class Player(pygame.sprite.Sprite):
         # PLAYER DIMENSIONS RELATIVE TO SCREEN SIZE
         multiplier = self.screen_size[1] * 0.0015
 
-        self.player_run = [pygame.transform.scale(img, (img.get_width() * multiplier, img.get_height() * multiplier)) for img in self.player_run]
-        self.player_jump = [pygame.transform.scale(img, (img.get_width() * multiplier, img.get_height() * multiplier)) for img in self.player_jump]
+        self.player_run = [pygame.transform.scale(img, (
+            img.get_width() * multiplier, img.get_height()
+            * multiplier)) for img in self.player_run]
+        self.player_jump = [pygame.transform.scale(img, (
+            img.get_width()
+            * multiplier, img.get_height() * multiplier)) for img in self.player_jump]
 
         initial_x = self.screen_size[0] // 10
         initial_y = self.screen_size[1] - self.screen_size[1] // 2
@@ -39,15 +75,25 @@ class Player(pygame.sprite.Sprite):
         self.jump_sound.set_volume(0.5)
 
     def player_input(self, channel):
+        """
+        Handle the player input.
+
+        Parameters:
+        channel (pygame.mixer.Channel): The sound channel to play the jump sound.
+        """
         keys = pygame.key.get_pressed()
         # JUMP
-        if keys[pygame.K_SPACE] and self.rect.bottom >= self.screen_size[1] - self.screen_size[1] // 3.5:
+        if keys[pygame.K_SPACE] \
+            and self.rect.bottom >= self.screen_size[1] - self.screen_size[1] // 3.5:
             # GRAVITY RELATIVE TO SCREEN SIZE
             self.gravity = -0.01403 * self.screen_size[1] - 5.978
             # PLAY JUMP SOUND
             channel.play(self.jump_sound)
 
     def apply_gravity(self):
+        """
+        Apply gravity to the player.
+        """
         # INCREASING GRAVITY TO SIMULATE FREE FALL
         self.gravity += 1
         self.rect.y += self.gravity
@@ -55,6 +101,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5
 
     def animation_state(self):
+        """
+        Set the animation state of the player.
+        """
         # JUMPING ANIMATION
         if self.rect.bottom < self.screen_size[1] - self.screen_size[1] // 3.5:
             self.jump_index += 0.1
@@ -69,10 +118,22 @@ class Player(pygame.sprite.Sprite):
             self.image = self.player_run[int(self.run_index)]
 
     def update(self, channel):
+        """
+        Update the player.
+
+        Parameters:
+        channel (pygame.mixer.Channel): The sound channel to play the jump sound.
+        """
         self.player_input(channel)
         self.apply_gravity()
         self.animation_state()
 
     def update_screen_size(self, screen_size):
+        """
+        Update the screen size of the player.
+        
+        Parameters:
+        screen_size (tuple): The size of the screen.
+        """
         self.screen_size = screen_size
         self.load()
