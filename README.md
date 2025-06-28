@@ -10,7 +10,6 @@ Marathoner is a simple 2D infinite runner game built with Pygame. The player con
 - Space: Jump and start a new game
 - Escape or [ESC]: Toggle the pause menu
 - Drag corners or sides: Resize the window
-- [X] button: Quit the game
 
 ## Menu Settings
 - Toggle fullscreen
