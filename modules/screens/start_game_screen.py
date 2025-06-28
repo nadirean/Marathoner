@@ -65,7 +65,7 @@ class StartGameScreen(BaseScreen):
         center_x = screen_size[0] // 2
         score_y = int(screen_size[1] / 1.1)
         action_button_y = int(screen_size[1] / 1.25)
-        github_button_y = screen_size[1] // 12
+        marathoner_y = screen_size[1] // 12
         quit_button_x = screen_size[0] - screen_size[0] // 14
         quit_button_y = screen_size[1] // 14
 
@@ -73,8 +73,9 @@ class StartGameScreen(BaseScreen):
         self.screen.blit(pygame.transform.scale(self.sky_surface, screen_size), (0, 0))
         self.screen.blit(pygame.transform.scale(self.vignette_surface, screen_size), (0, 0))
 
-        # Draw best score text
+        # Draw best score text and game name
         self.draw_text(f"BEST SCORE: {best_score}", (center_x, score_y))
+        self.draw_text("Marathoner", (center_x, marathoner_y))
 
         # Draw action button
         self.draw_button(
@@ -82,15 +83,6 @@ class StartGameScreen(BaseScreen):
             action_button_y,
             "CLICK OR PRESS 'SPACE' TO START", 
             self.parent.start_game, 
-            events
-        )
-
-        # Draw GitHub button
-        self.draw_button(
-            center_x, 
-            github_button_y,
-            "[VISIT MY GITHUB]", 
-            self.parent.open_github, 
             events
         )
 

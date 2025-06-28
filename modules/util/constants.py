@@ -48,7 +48,6 @@ GAME_OVER_COOLDOWN: Final[int] = 500  # milliseconds
 RESIZE_COOLDOWN: Final[int] = 1000  # milliseconds
 
 # File paths and URLs
-GITHUB_URL: Final[str] = "https://github.com/f4rys"
 SETTINGS_PATH: Final[Path] = Path.home() / 'Marathoner' / 'settings.ini'
 BEST_SCORE_PATH: Final[str] = os.path.join(os.path.expanduser("~"), 'Marathoner', 'best_score.txt')
 

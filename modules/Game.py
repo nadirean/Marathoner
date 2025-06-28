@@ -1,6 +1,5 @@
 import os
 import sys
-import webbrowser
 from random import choice
 from typing import List, Tuple
 
@@ -25,7 +24,6 @@ from modules.util.constants import (
     MAX_ASPECT_RATIO,
     MUSIC_VOLUME,
     SOUND_VOLUME,
-    GITHUB_URL,
     FONT_SIZE_DIVISOR,
     SettingType
 )
@@ -266,10 +264,6 @@ class Game:
             self.last_game_over_time = pygame.time.get_ticks()
             return 0
         return 1
-
-    def open_github(self) -> None:
-        """Open the developer's GitHub page in default browser."""
-        webbrowser.open(GITHUB_URL, new=0, autoraise=True)
 
     def handle_resize(self, w: int, h: int) -> None:
         """

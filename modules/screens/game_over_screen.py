@@ -69,8 +69,8 @@ class GameOverScreen(BaseScreen):
         best_score_y = int(screen_size[1] / 1.1)
         restart_x = screen_size[0] // 2
         restart_y = int(screen_size[1] / 1.25)
-        github_x = screen_size[0] // 2
-        github_y = screen_size[1] // 12
+        marathoner_x = screen_size[0] // 2
+        marathoner_y = screen_size[1] // 12
         quit_x = screen_size[0] - screen_size[0] // 14
         quit_y = screen_size[1] // 14
 
@@ -80,10 +80,11 @@ class GameOverScreen(BaseScreen):
             (0, 0)
         )
 
-        # Draw title and scores
+        # Draw title, scores and game name
         self.draw_text("GAME OVER", (center_x, title_y))
         self.draw_text(f"YOUR SCORE: {score}", (center_x, score_y), Colors.WHITE)
         self.draw_text(f"BEST SCORE: {best_score}", (center_x, best_score_y))
+        self.draw_text("Marathoner", (marathoner_x, marathoner_y))
 
         # Draw action button
         self.draw_button(
@@ -91,15 +92,6 @@ class GameOverScreen(BaseScreen):
             restart_y,
             "CLICK OR PRESS 'SPACE' TO START", 
             self.parent.start_game, 
-            events
-        )
-
-        # Draw GitHub button
-        self.draw_button(
-            github_x, 
-            github_y,
-            "[VISIT MY GITHUB]", 
-            self.parent.open_github, 
             events
         )
 
