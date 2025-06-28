@@ -3,9 +3,14 @@ A module containing the Settings class for game configuration management.
 """
 
 import os
+from typing import TYPE_CHECKING
 import configparser
 
 from modules.util.constants import SettingType, DEFAULT_SETTINGS, SETTINGS_PATH
+from modules.components.error_popup import ErrorPopup
+
+if TYPE_CHECKING:
+    import pygame
 
 
 class Settings:
@@ -21,13 +26,17 @@ class Settings:
         sounds: Whether sound effects are enabled
         config: ConfigParser instance for INI file management
     """
-    def __init__(self) -> None:
+    def __init__(self, screen_size: tuple = None, screen: 'pygame.Surface' = None, ) -> None:
         """Initialize settings with default values and load from file if available."""
         self.config = configparser.ConfigParser()
 
         # Set default values
         self.music: bool = bool(DEFAULT_SETTINGS['GENERAL'][SettingType.MUSIC.value])
         self.sounds: bool = bool(DEFAULT_SETTINGS['GENERAL'][SettingType.SOUNDS.value])
+
+        # If screen is provided, use it for error popups
+        self.screen = screen
+        self.screen_size = screen_size
 
         os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
         self._load_settings()
@@ -41,7 +50,8 @@ class Settings:
                 self.config.read(SETTINGS_PATH)
                 self._update_attributes_from_config()
             except (configparser.Error, ValueError) as e:
-                print(f"Warning: Could not load settings file: {e}")
+                if self.screen:
+                    ErrorPopup(self.screen, self.screen_size).display_error(f"Could not load settings file: {e}")
                 self._create_default_settings()
 
     def _update_attributes_from_config(self) -> None:
@@ -51,7 +61,8 @@ class Settings:
                 setting_value = self.config.getboolean("GENERAL", setting.value)
                 setattr(self, setting.value.lower(), setting_value)
         except (configparser.NoSectionError, configparser.NoOptionError, ValueError) as e:
-            print(f"Warning: Invalid settings format: {e}")
+            if self.screen:
+                ErrorPopup(self.screen, self.screen_size).display_error(f"Invalid settings format: {e}")
             self._create_default_settings()
 
     def _create_default_settings(self) -> None:
@@ -69,7 +80,8 @@ class Settings:
                 self.config.write(f)
 
         except OSError as e:
-            print(f"Error creating settings file: {e}")
+            if self.screen:
+                ErrorPopup(self.screen, self.screen_size).display_error(f"Error creating settings file: {e}")
 
     def update_settings(self, state: bool, setting: SettingType) -> bool:
         """
@@ -99,5 +111,6 @@ class Settings:
             return True
 
         except OSError as e:
-            print(f"Error saving settings: {e}")
+            if self.screen:
+                ErrorPopup(self.screen, self.screen_size).display_error(f"Error saving settings: {e}")
             return False

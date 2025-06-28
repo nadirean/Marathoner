@@ -20,9 +20,6 @@ def main() -> None:
     except KeyboardInterrupt:
         print("\nGame interrupted by user")
         sys.exit(0)
-    except Exception as e:
-        print(f"An error occurred while running the game: {e}")
-        sys.exit(1)
 
 
 if __name__ == "__main__":

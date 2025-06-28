@@ -6,6 +6,7 @@ from typing import List, Tuple
 
 import pygame
 
+from modules.components.error_popup import ErrorPopup
 from modules.models.obstacle import Obstacle
 from modules.models.player import Player
 from modules.screens.game_over_screen import GameOverScreen
@@ -77,9 +78,9 @@ class Game:
         """Initialize the game with all required components and settings."""
         pygame.init()
 
+        self._setup_display()
         self._ensure_game_directory()
         self._initialize_settings()
-        self._setup_display()
         self._initialize_game_objects()
         self._setup_audio()
         self._initialize_ui()
@@ -95,11 +96,11 @@ class Game:
             game_dir = os.path.expanduser("~") + '/Marathoner'
             os.makedirs(game_dir, exist_ok=True)
         except OSError as e:
-            print(f"Warning: Could not create game directory: {e}")
+            ErrorPopup(self.screen, self.screen_size).display_error(f"Could not create game directory: {e}")
 
     def _initialize_settings(self) -> None:
         """Initialize game settings."""
-        self.settings = Settings()
+        self.settings = Settings(self.screen_size, self.screen)
 
     def _setup_display(self) -> None:
         """Setup display and window properties."""
@@ -161,7 +162,7 @@ class Game:
             resource_path('font/pixeled.ttf'), 
             (self.screen_size[0] + self.screen_size[1]) // FONT_SIZE_DIVISOR
         )
-        self.score_system = ScoreSystem(self.screen_size)
+        self.score_system = ScoreSystem(self.screen_size, self.screen)
 
         # Game state variables
         self.start_time: int = 0

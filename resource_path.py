@@ -25,6 +25,6 @@ def resource_path(relative_path: str) -> str:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = getattr(sys, '_MEIPASS', Path(__file__).parent.absolute())
         return os.path.join(base_path, relative_path)
-    except Exception:
+    except (AttributeError, OSError, TypeError, FileNotFoundError):
         # Fallback to current directory if anything goes wrong
         return os.path.join(Path.cwd(), relative_path)

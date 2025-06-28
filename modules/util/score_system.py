@@ -4,6 +4,7 @@ from typing import Optional
 import pygame
 
 from modules.util.constants import BEST_SCORE_PATH
+from modules.components.error_popup import ErrorPopup
 
 
 class ScoreSystem:
@@ -18,17 +19,19 @@ class ScoreSystem:
         _score_surface: Optional Pygame Surface for rendering the score
         _score_rectangle: Optional Pygame Rect for positioning the score on the screen
     """
-    def __init__(self, screen_size: tuple[int, int]) -> None:
+    def __init__(self, screen_size: tuple[int, int], screen: Optional[pygame.Surface] = None) -> None:
         """
         Initialize the ScoreSystem.
 
         Args:
             screen_size: Tuple containing (width, height) of the game screen
+            screen: Optional pygame Surface for error popups
         """
         self._score_surface: Optional[pygame.Surface] = None
         self._score_rectangle: Optional[pygame.Rect] = None
         self.update_screen_size(screen_size)
-
+        self.screen = screen
+        self.screen_size = screen_size
         os.makedirs(os.path.dirname(BEST_SCORE_PATH), exist_ok=True)
 
     def load_best_score(self) -> int:
@@ -43,6 +46,7 @@ class ScoreSystem:
                 score = file.read().strip()
                 return int(score) if score.isdigit() else 0
         except (FileNotFoundError, ValueError, OSError):
+            ErrorPopup(self.screen, self.screen_size).display_error("Best score file not found or invalid. Resetting to 0.")
             return 0
 
     def save_best_score(self, score: int) -> bool:
@@ -63,7 +67,8 @@ class ScoreSystem:
                 file.write(str(score))
             return True
         except (FileNotFoundError, ValueError, OSError) as e:
-            print(f"Error saving best score: {e}")
+            if self.screen:
+                ErrorPopup(self.screen, self.screen_size).display_error(f"Error saving best score: {e}")
             return False
 
     def display_score(self, game_font: pygame.font.Font, start_time: int, screen: pygame.Surface) -> int:
@@ -115,5 +120,6 @@ class ScoreSystem:
                 file.write('0')
             return True
         except OSError as e:
-            print(f"Error resetting best score: {e}")
+            if self.screen:
+                ErrorPopup(self.screen, self.screen_size).display_error(f"Error resetting best score: {e}")
             return False
