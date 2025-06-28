@@ -1,10 +1,12 @@
 import unittest
 from unittest.mock import MagicMock
+
 import pygame
 
-from modules.Button import Button
+from modules.models.Button import Button
 
-class TestButton(unittest.TestCase):
+
+class ButtonTest(unittest.TestCase):
     def setUp(self):
         pygame.init()
         pygame.mixer.init()
@@ -34,3 +36,6 @@ class TestButton(unittest.TestCase):
 
         self.assertEqual(repr(self.button.button_text), repr(self.font.render("Click me", True, "Gray")))
         self.on_click_function.assert_called_once()
+
+if __name__ == '__main__':
+    unittest.main()

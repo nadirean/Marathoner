@@ -6,3 +6,5 @@ design
 dist
 build
 *.spec
+
+.idea
