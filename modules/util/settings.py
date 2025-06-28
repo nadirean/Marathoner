@@ -1,67 +1,103 @@
 """
-A module containing the Settings class.
+A module containing the Settings class for game configuration management.
 """
 
-import configparser
 import os
+import configparser
 
-from modules.util.setting_type import SettingType
-
-DEFAULT_SETTINGS = {
-    'GENERAL': { SettingType.MUSIC.value: 1, SettingType.SOUNDS.value: 1 }
-}
-
-SETTINGS_PATH = os.path.join(os.path.expanduser("~"), 'Marathoner', 'settings.ini')
+from modules.util.constants import SettingType, DEFAULT_SETTINGS, SETTINGS_PATH
 
 
 class Settings:
     """
-    A class responsible for handling the game settings.
-    
-    Attributes:
-    music (bool): Whether the music is enabled.
-    sounds (bool): Whether the sounds are enabled.
-    config (configparser.ConfigParser): The configuration parser.
-    
-    Methods:
-    update_settings: Update the game settings.
-    """
-    def __init__(self):
-        self.config = configparser.ConfigParser()
-        self.music = bool(DEFAULT_SETTINGS['GENERAL'][SettingType.MUSIC.value])
-        self.sounds = bool(DEFAULT_SETTINGS['GENERAL'][SettingType.SOUNDS.value])
+    A class responsible for handling game settings persistence and management.
 
+    This class manages loading, saving, and updating game settings including
+    music and sound preferences. Settings are stored in an INI file in the
+    user's home directory.
+
+    Attributes:
+        music: Whether background music is enabled
+        sounds: Whether sound effects are enabled
+        config: ConfigParser instance for INI file management
+    """
+    def __init__(self) -> None:
+        """Initialize settings with default values and load from file if available."""
+        self.config = configparser.ConfigParser()
+
+        # Set default values
+        self.music: bool = bool(DEFAULT_SETTINGS['GENERAL'][SettingType.MUSIC.value])
+        self.sounds: bool = bool(DEFAULT_SETTINGS['GENERAL'][SettingType.SOUNDS.value])
+
+        os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
         self._load_settings()
 
-    def _load_settings(self):
-        # Create the settings file if it doesn't exist
-        if not os.path.exists(SETTINGS_PATH):
+    def _load_settings(self) -> None:
+        """Load settings from file, creating default file if none exists."""
+        if not SETTINGS_PATH.exists():
             self._create_default_settings()
-        # Otherwise, read the settings from the file and update the attributes
         else:
-            self.config.read(SETTINGS_PATH)
+            try:
+                self.config.read(SETTINGS_PATH)
+                self._update_attributes_from_config()
+            except (configparser.Error, ValueError) as e:
+                print(f"Warning: Could not load settings file: {e}")
+                self._create_default_settings()
+
+    def _update_attributes_from_config(self) -> None:
+        """Update instance attributes from loaded configuration."""
+        try:
             for setting in SettingType:
-                setattr(self, setting.value.lower(),
-                        self.config.getboolean("GENERAL", setting.value))
+                setting_value = self.config.getboolean("GENERAL", setting.value)
+                setattr(self, setting.value.lower(), setting_value)
+        except (configparser.NoSectionError, configparser.NoOptionError, ValueError) as e:
+            print(f"Warning: Invalid settings format: {e}")
+            self._create_default_settings()
 
-    def _create_default_settings(self):
-        # Create the settings file with the default settings
-        for section, settings in DEFAULT_SETTINGS.items():
-            self.config[section] = {key: str(value) for key, value in settings.items()}
+    def _create_default_settings(self) -> None:
+        """Create settings file with default values."""
+        try:
+            # Clear any existing configuration
+            self.config.clear()
 
-        with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
-            self.config.write(f)
+            # Add default settings
+            for section, settings in DEFAULT_SETTINGS.items():
+                self.config[section] = {key: str(value) for key, value in settings.items()}
 
-    def update_settings(self, state: bool, setting: SettingType):
+            # Write to file
+            with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
+                self.config.write(f)
+
+        except OSError as e:
+            print(f"Error creating settings file: {e}")
+
+    def update_settings(self, state: bool, setting: SettingType) -> bool:
         """
-        Update the game settings.
+        Update a game setting and save to file.
 
-        Parameters:
-        state (bool): the new state of the setting.
-        setting (SettingType): the setting to update.
+        Args:
+            state: New state of the setting (True/False)
+            setting: The setting type to update
+
+        Returns:
+            True if successfully updated and saved, False otherwise
         """
-        setattr(self, setting.value.lower(), state)
-        self.config.set("GENERAL", setting.value, "1" if state else "0")
+        try:
+            # Update instance attribute
+            setattr(self, setting.value.lower(), state)
 
-        with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
-            self.config.write(f)
+            # Update configuration
+            if not self.config.has_section("GENERAL"):
+                self.config.add_section("GENERAL")
+
+            self.config.set("GENERAL", setting.value, "1" if state else "0")
+
+            # Save to file
+            with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
+                self.config.write(f)
+
+            return True
+
+        except OSError as e:
+            print(f"Error saving settings: {e}")
+            return False
