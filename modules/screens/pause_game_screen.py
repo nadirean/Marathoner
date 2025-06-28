@@ -47,6 +47,13 @@ class PauseGameScreen(BaseScreen):
             resource_path('images/blur.jpg')
         ).convert_alpha()
 
+    def handle_reset_best_score(self):
+        """
+        Reset the best score and invalidate the cache so the UI updates immediately.
+        """
+        if self.parent.score_system.reset_best_score():
+            self.parent.invalidate_score_cache()
+
     def frame(
         self, 
         screen_size: Tuple[int, int], 
@@ -86,7 +93,7 @@ class PauseGameScreen(BaseScreen):
         menu_buttons = [
             ("[ABORT GAME]", self.parent.abort_game),
             ("[FULLSCREEN F11]", self.parent.toggle_fullscreen),
-            ("[RESET BEST SCORE]", self.parent.score_system.reset_best_score),
+            ("[RESET BEST SCORE]", self.handle_reset_best_score),
             (music_text, self.parent.toggle_music),
             (sounds_text, self.parent.toggle_sounds)
         ]
