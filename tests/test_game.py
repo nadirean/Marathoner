@@ -3,6 +3,7 @@ import unittest
 import pygame
 
 from modules.Game import Game
+from modules.util.constants import SettingType
 
 
 class TestGame(unittest.TestCase):
@@ -27,7 +28,7 @@ class TestGame(unittest.TestCase):
         self.assertEqual(self.game.screen_size, original_screen_size)
 
     def test_toggle_music(self):
-        #self.game.settings.update_settings(True, "Music")
+        self.game.settings.update_settings(True, SettingType.MUSIC)
         self.assertEqual(self.game.settings.music, 1)
 
         self.game.toggle_music()
@@ -37,7 +38,7 @@ class TestGame(unittest.TestCase):
         self.assertEqual(self.game.settings.music, 1)
 
     def test_toggle_sounds(self):
-        #self.game.settings.update_settings(True, "Sounds")
+        self.game.settings.update_settings(True, SettingType.SOUNDS)
         self.assertEqual(self.game.settings.sounds, 1)
 
         self.game.toggle_sounds()

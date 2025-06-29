@@ -2,7 +2,7 @@ import os
 import unittest
 
 from modules.util.settings import Settings, SETTINGS_PATH
-from modules.util.setting_type import SettingType
+from modules.util.constants import SettingType
 
 
 class TestSettings(unittest.TestCase):

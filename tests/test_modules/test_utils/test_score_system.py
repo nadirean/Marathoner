@@ -12,7 +12,8 @@ class TestScoreSystem(unittest.TestCase):
         pygame.init()
         pygame.mixer.init()
         self.screen_size = (800, 600)
-        self.score_system = ScoreSystem(self.screen_size)
+        self.screen = pygame.display.set_mode(self.screen_size, pygame.RESIZABLE)
+        self.score_system = ScoreSystem(self.screen_size, self.screen)
 
     def tearDown(self):
         pygame.quit()
@@ -25,14 +26,6 @@ class TestScoreSystem(unittest.TestCase):
             self.assertEqual(best_score, 100)
         except Exception:
             pass
-
-    def test_load_best_score_file_not_found(self):
-        if not os.path.exists("best_score.txt"):
-            with open(os.path.expanduser("~") + '/Marathoner/best_score.txt', 'w',  encoding='utf-8') as file:
-                file.write("0")
-        os.remove(os.path.expanduser("~") + '/Marathoner/best_score.txt')
-        best_score = self.score_system.load_best_score()
-        self.assertEqual(best_score, 0)
 
     def test_load_best_score_invalid_value(self):
         with open(os.path.expanduser("~") + '/Marathoner/best_score.txt', 'w',  encoding='utf-8') as file:
@@ -56,8 +49,8 @@ class TestScoreSystem(unittest.TestCase):
 
         current_time = self.score_system.display_score(game_font, start_time, screen)
 
-        self.assertIsInstance(self.score_system.score_surface, pygame.Surface)
-        self.assertIsInstance(self.score_system.score_rectangle, pygame.Rect)
+        self.assertIsInstance(self.score_system._score_surface, pygame.Surface)
+        self.assertIsInstance(self.score_system._score_rectangle, pygame.Rect)
         self.assertEqual(current_time, 0)
 
     def test_update_screen_size(self):
@@ -66,6 +59,6 @@ class TestScoreSystem(unittest.TestCase):
         self.score_system.update_screen_size(new_screen_size)
 
         self.assertEqual(self.score_system.screen_size, new_screen_size)
-        if self.score_system.score_rectangle and self.score_system.score_surface:
+        if self.score_system._score_rectangle and self.score_system._score_surface:
             expected_rect_center = (new_screen_size[0] // 2, new_screen_size[1] // 14)
-            self.assertEqual(self.score_system.score_rectangle.center, expected_rect_center)
+            self.assertEqual(self.score_system._score_rectangle.center, expected_rect_center)

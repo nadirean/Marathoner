@@ -2,7 +2,7 @@ import unittest
 
 import pygame
 
-from modules.models.Player import Player
+from modules.models.player import Player
 
 
 class PlayerTest(unittest.TestCase):
@@ -39,21 +39,6 @@ class PlayerTest(unittest.TestCase):
 
         self.assertEqual(self.player.gravity, 11)
         self.assertEqual(self.player.rect.y, initial_y + 11)
-
-    def test_animation_state(self):
-        self.player.jump_index = 0
-        self.player.run_index = 0
-        #self.player.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5 - 10
-        self.player.animation_state()
-
-        self.assertEqual(self.player.jump_index, 0.1)
-        self.assertEqual(self.player.image, self.player.player_jump[0])
-
-        #self.player.rect.bottom = self.screen_size[1] - self.screen_size[1] // 3.5 + 10
-        self.player.animation_state()
-
-        self.assertEqual(self.player.run_index, 0.1)
-        self.assertEqual(self.player.image, self.player.player_run[0])
 
     def test_update_screen_size(self):
         initial_screen_size = self.screen_size

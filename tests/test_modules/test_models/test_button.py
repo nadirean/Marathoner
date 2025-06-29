@@ -3,7 +3,8 @@ from unittest.mock import MagicMock
 
 import pygame
 
-from modules.models.Button import Button
+from modules.components.button import Button
+from modules.util.constants import Colors
 
 
 class ButtonTest(unittest.TestCase):
@@ -14,7 +15,7 @@ class ButtonTest(unittest.TestCase):
         self.font = pygame.font.Font('font/pixeled.ttf', 40)
         self.on_click_function = MagicMock()
         self.events = [MagicMock()]
-        self.button = Button(100, 100, self.font, "Click me", self.screen, self.on_click_function, self.events)
+        self.button = Button(100, 100, self.font, "Click me", self.screen, self.on_click_function, self.events, Colors.GRAY)
 
     def tearDown(self):
         pygame.quit()
