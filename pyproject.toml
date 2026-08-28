@@ -1,7 +1,7 @@
 [project]
 name = "marathoner"
 version = "0.1.0"
-description = "Add your description here"
+description = "A 2D infinite runner game built with Pygame"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

@@ -16,7 +16,7 @@ class ObstacleTest(unittest.TestCase):
         pygame.quit()
 
     def test_load_stone1_type_obstacle(self):
-        obstacle = Obstacle('stone1', self.screen_size)
+        obstacle = Obstacle("stone1", self.screen_size)
 
         self.assertIsNotNone(obstacle.image)
 
@@ -24,7 +24,7 @@ class ObstacleTest(unittest.TestCase):
         self.assertEqual(obstacle.rect.midbottom[1], expected_y_pos)
 
     def test_load_stone2_type_obstacle(self):
-        obstacle = Obstacle('stone2', self.screen_size)
+        obstacle = Obstacle("stone2", self.screen_size)
 
         self.assertIsNotNone(obstacle.image)
 
@@ -32,7 +32,7 @@ class ObstacleTest(unittest.TestCase):
         self.assertEqual(obstacle.rect.midbottom[1], expected_y_pos)
 
     def test_update_changes_rect_x(self):
-        obstacle = Obstacle('stone1', self.screen_size)
+        obstacle = Obstacle("stone1", self.screen_size)
         original_x = obstacle.rect.x
 
         obstacle.update()
@@ -40,15 +40,13 @@ class ObstacleTest(unittest.TestCase):
         self.assertEqual(obstacle.rect.x, original_x - 10)
 
     def test_destroy_kills_obstacle(self):
-        obstacle = Obstacle('stone1', self.screen_size)
+        obstacle = Obstacle("stone1", self.screen_size)
         obstacle.rect.x = -(self.screen_size[0] + 50)
-
-        #obstacle.destroy()
 
         self.assertFalse(obstacle.alive())
 
     def test_update_screen_size_changes_image_and_rect(self):
-        obstacle = Obstacle('stone1', self.screen_size)
+        obstacle = Obstacle("stone1", self.screen_size)
 
         original_image = obstacle.image
         original_rect = obstacle.rect
@@ -59,5 +57,6 @@ class ObstacleTest(unittest.TestCase):
         self.assertIsNot(original_image, obstacle.image)
         self.assertIsNot(original_rect, obstacle.rect)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

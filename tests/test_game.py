@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 
 import pygame
 
@@ -7,7 +8,6 @@ from modules.util.constants import SettingType
 
 
 class TestGame(unittest.TestCase):
-
     def setUp(self):
         pygame.init()
         pygame.mixer.init()
@@ -58,11 +58,16 @@ class TestGame(unittest.TestCase):
 
     def test_resume_game(self):
         self.game.pause_game()
-        pause_time = self.game.pause_time
-        self.game.resume_game()
+        pause_ticks = self.game.pause_time
+        original_start_time = self.game.start_time
+        # Mock get_ticks to return a value 3 seconds after the pause
+        with unittest.mock.patch(
+            "pygame.time.get_ticks", return_value=pause_ticks + 3000
+        ):
+            self.game.resume_game()
         self.assertEqual(self.game.current_screen, 1)
         self.assertEqual(self.game.pause_time, 0)
-        self.assertEqual(self.game.start_time, self.game.start_time + int(pause_time / 1000))
+        self.assertEqual(self.game.start_time, original_start_time + 3)
 
     def test_collision_with_obstacle_group(self):
         pygame.sprite.spritecollideany = lambda sprite, group, collide_mask: True
@@ -80,7 +85,9 @@ class TestGame(unittest.TestCase):
         new_width = int(original_screen_size[0] * 1.5)
         self.game.handle_resize(new_width, original_screen_size[1])
         self.assertEqual(self.game.screen_size[0], new_width)
-        self.assertEqual(self.game.screen_size[1], int(new_width / self.game.aspect_ratio))
+        self.assertEqual(
+            self.game.screen_size[1], int(new_width / self.game.aspect_ratio)
+        )
 
         new_aspect_ratio = 2.0
         new_height = int(original_screen_size[1] / new_aspect_ratio)

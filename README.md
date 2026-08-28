@@ -2,36 +2,64 @@
 
 #
 
-Marathoner is a simple 2D infinite runner game built with Pygame. The player controls a character who automatically runs through a side-scrolling world. The goal is to avoid obstacles by timing jumps accurately. In the game menu, you can see your best score and adjust settings.
+Marathoner is a 2D infinite runner built with Python and Pygame. The player automatically runs through a side-scrolling world, jumping to avoid stone obstacles. Score equals time survived; best score persists between sessions.
 
 ![Game Preview](preview.gif)
 
 ## Controls
-- Space: Jump and start a new game
-- Escape or [ESC]: Toggle the pause menu
-- Drag corners or sides: Resize the window
+- **Space**: Jump / start a new game
+- **Escape**: Toggle the pause menu
+- **Drag corners/sides**: Resize the window (aspect ratio constrained between 1.6:1 and 1.9:1)
 
 ## Menu Settings
 - Toggle fullscreen
-- Toggle music
-- Toggle sounds
+- Toggle music and sounds
 - Reset best score
 
+## Architecture
+
+```
+marathoner/
+├── main.py                  # Entry point
+├── resource_path.py         # PyInstaller-aware asset path resolver
+├── modules/
+│   ├── Game.py              # Core game loop, state machine, event dispatch
+│   ├── models/
+│   │   ├── player.py        # Player sprite: physics, animation, input
+│   │   └── obstacle.py      # Obstacle spawning, movement, scaling
+│   ├── screens/
+│   │   ├── base_screen.py   # Abstract base with draw_text/draw_button
+│   │   ├── start_game_screen.py
+│   │   ├── game_screen.py
+│   │   ├── pause_game_screen.py
+│   │   └── game_over_screen.py
+│   ├── components/
+│   │   ├── button.py        # Interactive UI button with hover/click
+│   │   └── error_popup.py   # Modal error dialog with cached resources
+│   └── util/
+│       ├── constants.py     # Game tuning values, enums, file paths
+│       ├── settings.py      # INI-based settings persistence
+│       └── score_system.py  # Score rendering, best score I/O
+└── tests/                   # 30 unit tests (unittest)
+```
+
+## Technical Details
+
+- **State machine**: `Game.py` manages four states (start, playing, paused, game over) via an integer `current_screen`. Each state delegates rendering to its corresponding screen class.
+- **Pixel-perfect collision**: Uses `pygame.mask` for sprite-level hit detection between the player and obstacles.
+- **Adaptive scaling**: All sprites and UI elements resize proportionally to the window size. Jump strength and gravity are computed from a linear formula (`mx + b`) to stay consistent across resolutions.
+- **Aspect ratio lock**: Window resize is clamped to a 1.6:1–1.9:1 range, recalculating both dimensions to prevent distortion.
+- **Persistence**: Best score (`~/Marathoner/best_score.txt`) and settings (`~/Marathoner/settings.ini`) are stored in the user's home directory with error handling for missing/corrupt files.
+- **Asset loading**: `resource_path.py` resolves paths for both development and PyInstaller bundles.
+- **Error resilience**: `ErrorPopup` provides a modal fallback when settings or score files fail to load, with cached resources to avoid repeated file I/O.
+
 ## Getting Started
-- Launch the game and press Space or click to start running.
-- Avoid obstacles by jumping at the right time.
-- Pause the game with [ESC] to access settings or reset your best score.
-- Try to beat your high score each run!
 
-## Technology & Implementation
+```bash
+uv run main.py
+```
 
-- **Language & Framework:** Marathoner is written in Python and uses the Pygame library for graphics, input, and sound.
-- **Modular Design:** The codebase is organized into modules for game logic, UI screens, models, and utilities. This separation makes the code easier to maintain and extend.
-- **Game Loop:** The main loop handles event processing, game state updates, and rendering. Screens (start, pause, game, game over) are managed as separate classes for clarity.
-- **Asset Management:** Images, fonts, and sounds are loaded from dedicated folders. The `resource_path.py` utility ensures assets are found regardless of the working directory.
-- **Persistence:** The best score is saved to a file in the user's home directory, allowing high scores to persist between sessions.
-- **Settings:** User preferences (music, sounds, fullscreen) are stored in a config file and can be toggled in-game.
-- **Testing:** The project includes a `tests/` directory with unit tests for core logic and models.
+Requires Python 3.13+ and `pygame>=2.6.1`.
 
 ## Credits
 - Background sky graphics by [gstudioimagen on Freepik](https://www.freepik.com/free-vector/wanderlust-travel-landscapes_5667591.htm#query=pixel%20sky%20background&position=11&from_view=keyword&track=ais)
